@@ -1,0 +1,79 @@
+### register
+POST http://localhost:8080/user/register
+Content-Type: application/json
+
+{
+  "firstName": "Loretta",
+  "lastName": "Larenda",
+  "email": "lori@hotmail.com",
+  "password": "123456"
+}
+
+### login
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "email": "formicale@hotmail.com",
+  "password": "123"
+}
+
+### update
+PATCH http://localhost:8080/user/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwODI4OTA4LCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwOTE1MzA4LCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIiwiVVBEQVRFOlVTRVIiLCJVUERBVEU6Q1VTVE9NRVIiXX0.VBg9gWYYQgytey5yF_nhzQvnITUkRZau-0cCm8hTHuPx1T8b0toEatV_cCbneXDNdF_35DbPUKDvbijrk_qbIQ
+
+{
+  "id": 5,
+  "email": "formicale@hotmail.com",
+  "firstName": "Alex",
+  "lastName": "Formi",
+  "title": "Student",
+  "phone": "12345678901",
+  "adress": "Byron Street, 5",
+  "bio": "What a nice neat guy"
+}
+
+### update password
+
+PATCH http://localhost:8080/user/updatepassword
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwODI5MDc1LCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwOTE1NDc1LCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIiwiVVBEQVRFOlVTRVIiLCJVUERBVEU6Q1VTVE9NRVIiXX0.PsTgXn53-yWjpW8F911Ect1UEDNo6YuwwxxwF18K9Az6AaXUyKvZq1ZJGOduCkAZJYbvEnAvzgG66guxEokSXw
+
+
+{
+  "currentPassword": "123",
+  "newPassword": "1234",
+  "confirmNewPassword": "123"
+}
+
+
+### logout
+POST http://localhost:8080/logout
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwODI4OTA4LCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwOTE1MzA4LCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIiwiVVBEQVRFOlVTRVIiLCJVUERBVEU6Q1VTVE9NRVIiXX0.VBg9gWYYQgytey5yF_nhzQvnITUkRZau-0cCm8hTHuPx1T8b0toEatV_cCbneXDNdF_35DbPUKDvbijrk_qbIQ
+
+### verify code
+GET http://localhost:8080/user/verify/code/formicale@hotmail.com/AHOEUQFG
+
+### enter with profile
+GET http://localhost:8080/user/profile
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwODI4OTA4LCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwOTE1MzA4LCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIiwiVVBEQVRFOlVTRVIiLCJVUERBVEU6Q1VTVE9NRVIiXX0.VBg9gWYYQgytey5yF_nhzQvnITUkRZau-0cCm8hTHuPx1T8b0toEatV_cCbneXDNdF_35DbPUKDvbijrk_qbIQ
+
+### random page call
+GET http://localhost:8080/random
+
+### resetPassword / get verification code
+GET http://localhost:8080/user/resetpassword/formicale@hotmail.com
+
+### resetPassword / send verification code
+GET http://localhost:8080/user/verify/password/37f8d17e-e9f4-44ec-abfd-fc64427f9d33
+
+### resetPassword / reset password
+POST http://localhost:8080/user/resetpassword/37f8d17e-e9f4-44ec-abfd-fc64427f9d33/123456/123456
+
+### verifyAccount
+GET http://localhost:8080/user/verify/account/fc660cef-6b4b-4fb9-8a9f-0757d2435715
+
+### refresh Token
+GET http://localhost:8080/user/refresh/token
+#Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiaWF0IjoxNjkwMTA4NjI1LCJzdWIiOiJmb3JtaWNhbGVAaG90bWFpbC5jb20iLCJleHAiOjE2OTA1NDA2MjV9.zVudrKtZGLqLf0bdwwocvqGuRsQsiSL0uMgM0mC3vg1OwWhUpLjKJqdoYho25cF-Ws4FARiY61rTNDTw4HfMDA
