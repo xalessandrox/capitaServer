@@ -116,4 +116,15 @@ CREATE TABLE two_factors_verifications
     CONSTRAINT uq_two_factors_verifications_code UNIQUE (code)
 );
 
-
+-- This inserts the events
+--
+-- INSERT INTO events (type, description)
+-- VALUES ('LOGIN_ATTEMPT', 'You tried to login'),
+--        ('LOGIN_ATTEMPT_FAILURE', 'Failed attempt to login'),
+--        ('LOGIN_ATTEMPT_SUCCESS', 'Successful attempt to login'),
+--        ('PROFILE_UPDATE', 'Profile informations updated'),
+--        ('PROFILE_PICTURE_UPDATE', 'Profile picture updated'),
+--        ('ROLE_UPDATE', 'Role and permissions updated'),
+--        ('ACCOUNT_SETTINGS_UPDATE', 'Account setting updated'),
+--        ('MFA_UPDATE', 'Multi-Factor Authentication updated'),
+--        ('PASSWORD_UPDATE', 'Password updated');

@@ -33,7 +33,7 @@ import java.util.Optional;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private static final String[] PUBLIC_URLS = {"/user/register", "/user/login", "/user/verify/code", "/user/refresh/token"};
+    private static final String[] PUBLIC_URLS = {"/user/register", "/user/login", "/user/verify/code", "/user/refresh/token", "user/image"};
     private static final String HTTP_OPTIONS_METHOD = "OPTIONS";
     private static final String TOKEN_PREFIX = "Bearer ";
 

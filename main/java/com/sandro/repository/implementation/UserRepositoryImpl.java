@@ -26,8 +26,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import static com.sandro.enumeration.RoleType.ROLE_USER;
@@ -322,7 +328,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword) {
-        if(!newPassword.trim().equals(confirmNewPassword)) {
+        if (!newPassword.trim().equals(confirmNewPassword)) {
             throw new ApiException("Passwords don't match. Please try again.");
         }
         User user = get(id);
@@ -349,6 +355,55 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             jdbc.update(UPDATE_USER_SETTINGS_QUERY, Map.of("userId", userId, "enabled", enabled, "notLocked", notLocked));
         } catch (Exception exception) {
             throw new ApiException("An error occurred trying to update user accounts");
+        }
+    }
+
+    @Override
+    public void updateUsingMfa(Long id) {
+        log.info("Updating user's Multifactor Authentication");
+        User user = get(id);
+        boolean usingMfa = user.isUsingMfa();
+        try {
+            jdbc.update(UPDATE_USER_MFA_QUERY, Map.of("userId", id, "usingMfa", !usingMfa));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred trying to update multi-factor authentication");
+        }
+    }
+
+    private String saveProfileImage(String email, MultipartFile image) {
+        Path fileStorageLocation = Paths.get(System.getProperty("user.home") + "/Downloads/images/").toAbsolutePath().normalize();
+
+        if (!Files.exists(fileStorageLocation)) {
+            try {
+                Files.createDirectories(fileStorageLocation);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw new ApiException("Unable to create folder to save image");
+            }
+            log.info("Directory successfully created");
+        }
+
+        String randomKey = null;
+        try {
+            randomKey = UUID.randomUUID().toString();
+            Files.copy(image.getInputStream(), fileStorageLocation.resolve(email + '-' + randomKey + ".png"), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ApiException("Unable to  save image");
+        }
+        log.info("The following file was stored: {}", fileStorageLocation.resolve(email + '-' + randomKey + ".png"));
+        return randomKey;
+    }
+
+    @Override
+    public void updateImage(String email, MultipartFile image) {
+        log.info("Updating user's image");
+        String randomKey = saveProfileImage(email, image);
+        String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/image/" + email + '-' + randomKey + ".png").toUriString();
+        try {
+            jdbc.update(UPDATE_USER_IMAGE_URL_QUERY, Map.of("imageUrl", imageUrl, "email", email));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred trying to update multi-factor authentication");
         }
     }
 

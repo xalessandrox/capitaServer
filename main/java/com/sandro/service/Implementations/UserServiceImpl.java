@@ -10,6 +10,7 @@ import com.sandro.repository.UserRepository;
 import com.sandro.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Alessandro Formica
@@ -84,6 +85,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateSettings(Long id, boolean enabled, boolean notLocked) {
         userRepository.updateUserSettings(id, enabled, notLocked);
+    }
+
+    @Override
+    public void updateUsingMfa(Long id) {
+        userRepository.updateUsingMfa(id);
+    }
+
+    @Override
+    public void updateImage(String email, MultipartFile image) {
+        userRepository.updateImage(email, image);
     }
 
     public UserDTO mapToUserDto(User user) {

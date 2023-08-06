@@ -3,6 +3,7 @@ package com.sandro.service;
 import com.sandro.domain.User;
 import com.sandro.dto.UserDTO;
 import com.sandro.form.UpdateForm;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Alessandro Formica
@@ -31,4 +32,8 @@ public interface UserService {
     void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword);
 
     void updateSettings(Long id, boolean enabled, boolean notLocked);
+
+    void updateUsingMfa(Long id);
+
+    void updateImage(String email, MultipartFile image);
 }

@@ -3,6 +3,7 @@ package com.sandro.repository;
 import com.sandro.domain.User;
 import com.sandro.dto.UserDTO;
 import com.sandro.form.UpdateForm;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -45,4 +46,8 @@ public interface UserRepository<T extends User> {
     void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword);
 
     void updateUserSettings(Long id, boolean enabled, boolean notLocked);
+
+    void updateUsingMfa(Long id);
+
+    void updateImage(String email, MultipartFile image);
 }

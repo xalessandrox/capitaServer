@@ -63,4 +63,11 @@ public class UserQuery {
 
     public static final String UPDATE_USER_SETTINGS_QUERY =
             "UPDATE users SET enabled = :enabled, non_locked = :notLocked WHERE id = :userId";
+
+    public static final String UPDATE_USER_MFA_QUERY =
+            "UPDATE users SET using_mfa = :usingMfa WHERE id = :userId";
+
+    public static final String UPDATE_USER_IMAGE_URL_QUERY =
+            "UPDATE users SET image_url = :imageUrl WHERE email = :email";
+
 }
