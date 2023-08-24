@@ -12,8 +12,9 @@ import org.springframework.data.domain.Page;
 
 public interface InvoiceService {
 
-    void addCustomerToInvoice(Long userId, Long invoiceId);
+    void addCustomerToInvoice(Long userId, Invoice invoice);
     Invoice createInvoice(Invoice invoice);
     Page<Invoice> getInvoicesByPage(int page, int size);
+    Invoice getInvoice(Long id);
 
 }

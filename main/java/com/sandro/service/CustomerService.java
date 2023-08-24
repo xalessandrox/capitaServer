@@ -1,6 +1,7 @@
 package com.sandro.service;
 
 import com.sandro.domain.Customer;
+import com.sandro.domain.Statistics;
 import org.springframework.data.domain.Page;
 
 /**
@@ -20,4 +21,5 @@ public interface CustomerService {
     Page<Customer> searchCustomers(String lastName, int page, int size);
 
 
+    Statistics getStatistics();
 }

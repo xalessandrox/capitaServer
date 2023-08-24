@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@Entity
+@Entity(name = "invoices")
 public class Invoice {
 
     @Id

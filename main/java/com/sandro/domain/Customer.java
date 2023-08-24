@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@Entity
+@Entity(name = "customers")
 public class Customer {
 
     @Id
@@ -37,8 +37,24 @@ public class Customer {
     private String address;
     private String phone;
     private String imageUrl;
-    private Date createAt;
+    private Date createdAt;
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<Invoice> invoices;
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", createAt=" + createdAt +
+                ", invoices=" + invoices +
+                '}';
+    }
 }

@@ -105,6 +105,9 @@ public class UserResource {
                                 .build());
     }
 
+    /**
+     *
+     */
     @PatchMapping("/update")
     public ResponseEntity<HttpResponse> update(@RequestBody @Valid UpdateForm user) throws InterruptedException {
         UserDTO updatedUser = userService.updateUserDetails(user);
@@ -375,7 +378,6 @@ public class UserResource {
                         .build()
         );
     }
-
 
     @GetMapping("/verify/account/{key}")
     public ResponseEntity<HttpResponse> verifyAccount(@PathVariable("key") String key) {
