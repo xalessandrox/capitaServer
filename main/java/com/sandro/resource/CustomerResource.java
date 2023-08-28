@@ -9,6 +9,9 @@ import com.sandro.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,10 +44,9 @@ public class CustomerResource {
     private final CustomerService customerService;
     private final UserService userService;
 
-
     @GetMapping("/list")
     public ResponseEntity<HttpResponse> getCustomersByPage(@AuthenticationPrincipal UserDTO userDTO,
-                                                           @RequestParam Optional<Integer> page,
+                                                           @RequestParam Optional<Integer> pageNumber,
                                                            @RequestParam Optional<Integer> size) {
         return ResponseEntity
                 .ok(
@@ -51,7 +54,7 @@ public class CustomerResource {
                                 .timeStamp(LocalDateTime.now().toString())
                                 .data(Map.of(
                                         "user", userService.getUserByEmail(userDTO.getEmail()),
-                                        "customers", customerService.getCustomersByPage(page.orElse(0), size.orElse(10)),
+                                        "page", customerService.getCustomersByPage(pageNumber.orElse(0), size.orElse(10)),
                                         "statistics", customerService.getStatistics()
                                 ))
                                 .message("Customers retrieved")
@@ -97,8 +100,8 @@ public class CustomerResource {
 
     @GetMapping("/search")
     public ResponseEntity<HttpResponse> searchCustomer(@AuthenticationPrincipal UserDTO userDTO,
-                                                       @RequestParam Optional<String> lastName,
-                                                       @RequestParam Optional<Integer> page,
+                                                       @RequestParam("lastName") Optional<String> lastName,
+                                                       @RequestParam("pageNumber") Optional<Integer> pageNumber,
                                                        @RequestParam Optional<Integer> size) {
         return ResponseEntity
                 .ok(
@@ -106,8 +109,8 @@ public class CustomerResource {
                                 .timeStamp(LocalDateTime.now().toString())
                                 .data(Map.of(
                                         "user", userService.getUserByEmail(userDTO.getEmail()),
-                                        "customers", customerService.searchCustomers(
-                                                lastName.orElse(""), page.orElse(0), size.orElse(10)
+                                        "page", customerService.searchCustomers(
+                                                lastName.orElse(""), pageNumber.orElse(0), size.orElse(10)
                                         )))
                                 .message("Customers retrieved")
                                 .httpStatus(HttpStatus.OK)
@@ -148,14 +151,17 @@ public class CustomerResource {
     }
 
     @GetMapping("/downloads/report")
-    public ResponseEntity<Resource> downloadReport() {
+    public ResponseEntity<Resource> downloadReport() throws IOException {
 
         List<Customer> customers = new ArrayList<>();
         customerService.getCustomers().iterator().forEachRemaining(customers::add);
         CustomerReport report = new CustomerReport(customers);
+        InputStreamResource rep = report.export();
+        long size =  rep.contentLength();
         HttpHeaders headers = new HttpHeaders();
         headers.add("File-Name", "CustomerReport.xlsx");
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;File-Name=CustomerReport.xlsx");
+        headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(size));
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .headers(headers)
                 .body(report.export());

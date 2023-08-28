@@ -9,12 +9,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 /**
@@ -57,8 +60,9 @@ public class CustomerReport {
         return generateReport();
     }
 
-    private InputStreamResource generateReport() {
+    private  InputStreamResource generateReport() {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            System.out.println("Creating report yes yes for the ");
             XSSFFont font = workbook.createFont();
             font.setFontHeight(10);
             CellStyle style = workbook.createCellStyle();
@@ -77,7 +81,10 @@ public class CustomerReport {
                 row.createCell(8).setCellValue(customer.getCreatedAt());
             }
             workbook.write(out);
-            return new InputStreamResource(new ByteArrayInputStream(out.toByteArray()));
+//            workbook.close();
+            InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(out.toByteArray()));
+            return resource;
+//            return new ByteArrayResource(out.toByteArray());
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
             throw new ApiException("Unable to export report file");

@@ -79,7 +79,7 @@ public class InvoiceResource {
                                 .timeStamp(LocalDateTime.now().toString())
                                 .data(Map.of(
                                         "user", userService.getUserByEmail(userDTO.getEmail()),
-                                        "invoices", invoiceService.getInvoicesByPage(page.orElse(0), size.orElse(10))
+                                        "page", invoiceService.getInvoicesByPage(page.orElse(0), size.orElse(10))
                                 ))
                                 .message("Invoices retrieved")
                                 .httpStatus(HttpStatus.OK)

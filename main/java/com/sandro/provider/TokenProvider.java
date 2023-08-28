@@ -38,7 +38,7 @@ public class TokenProvider {
     private static final String SANDRO_DEV = "SANDRO_DEV";
     private static final String CUSTOMER_MANAGEMENT_SERVICE = "CUSTOMER_MANAGEMENT_SERVICE";
     public static final String AUTHORITIES = "authorities";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME =  10_800_000; // 3 hours
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME =  60000; //10_800_000; // 3 hours
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 21_600_000; // 6 hours
 
     @Value("${jwt.secret}")
