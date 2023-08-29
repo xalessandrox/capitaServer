@@ -77,7 +77,7 @@ public class UserResource {
                         HttpResponse.builder()
                                 .timeStamp(LocalDateTime.now().toString())
                                 .data(Map.of("user", userDTO))
-                                .message("User created")
+                                .message("User successfully created")
                                 .httpStatus(HttpStatus.CREATED)
                                 .statusCode(HttpStatus.CREATED.value())
                                 .build());

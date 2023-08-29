@@ -23,6 +23,9 @@ spring:
     init:
       mode: never
       continue-on-error: false
+  web:
+    locale-resolver: fixed
+    locale: it_IT
 server:
   error:
     path: /user/error
