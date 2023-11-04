@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.sandro.utils.Constants.*;
+
 /**
  * @author Alessandro Formica
  * @version 1.0
@@ -35,18 +37,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenProvider {
 
-    private static final String SANDRO_DEV = "SANDRO_DEV";
-    private static final String CUSTOMER_MANAGEMENT_SERVICE = "CUSTOMER_MANAGEMENT_SERVICE";
-    public static final String AUTHORITIES = "authorities";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME =  60000; //10_800_000; // 3 hours
-    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 21_600_000; // 6 hours
+
 
     @Value("${jwt.secret}")
     public String secret;
     private final UserService userService;
 
     public String createAccessToken(UserPrincipal userPrincipal) {
-
+        System.out.println("\n\n\n************************");
+        System.out.println("SECRET: " + secret);
+        System.out.println("\n\n\n*************************");
         return JWT.create()
                 .withIssuer(SANDRO_DEV)
                 .withIssuedAt(new Date())

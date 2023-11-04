@@ -42,10 +42,14 @@ public class UserQuery {
     public static final String UPDATE_USER_PWD_BY_URL_QUERY =
             "UPDATE users SET password = :password WHERE id = (SELECT user_id FROM reset_password_verifications WHERE url = :verificationUrl)";
 
+    public static final String UPDATE_USER_PWD_BY_USER_ID_QUERY = """
+            UPDATE users SET password = :password WHERE id = :userId
+            """;
+
     public static final String DELETE_PASSWORD_VERIFICATION_URL_QUERY =
             "DELETE FROM reset_password_verifications WHERE url = :verificationUrl";
 
-    public static final String  SELECT_USER_BY_ACCOUNT_VERIFICATION_URL_QUERY =
+    public static final String SELECT_USER_BY_ACCOUNT_VERIFICATION_URL_QUERY =
             "SELECT * FROM users WHERE id = (SELECT user_id FROM account_verifications WHERE url = :verificationUrl)";
 
     public static final String UPDATE_USER_ENABLED_QUERY =

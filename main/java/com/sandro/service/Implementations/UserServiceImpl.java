@@ -59,8 +59,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setNewPassword(String key, String password, String confirmPassword) {
-        userRepository.setNewPassword(key, password, confirmPassword);
+        userRepository.updatePassword(key, password, confirmPassword);
     }
+
+    @Override
+    public void updatePasswordBeingLoggedOut(Long userId, String newPassword, String confirmPassword) {
+        userRepository.updatePasswordBeingLoggedOut(userId, newPassword, confirmPassword);
+    }
+
+
 
     @Override
     public UserDTO verifyAccount(String key) {

@@ -11,6 +11,11 @@ public enum RoleType {
     ROLE_USER,
     ROLE_MANAGER,
     ROLE_ADMIN,
-    ROLE_SYSADMIN
+    ROLE_SYSADMIN;
+
+//    public String toRoleValue() {
+//        String roleT = this.toString();
+//        return roleT.substring(roleT.lastIndexOf('_') + 1);
+//    }
 
 }

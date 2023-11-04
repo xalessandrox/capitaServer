@@ -13,7 +13,7 @@ import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 public class EventUtils {
     public static String getIpAddress(HttpServletRequest request) {
-        String ipAddress = "Unknow IP";
+        String ipAddress = "Unknown IP";
         if (request != null) {
             ipAddress = request.getHeader("X-FORWARDED_FOR");
             if (ipAddress == null || ipAddress.equals("")) {

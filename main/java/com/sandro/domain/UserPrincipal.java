@@ -4,6 +4,7 @@ import com.sandro.dto.UserDTO;
 import com.sandro.dtomapper.UserDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,9 +27,10 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return
-                Arrays.stream(this.role.getPermissions().split(",".trim()))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+//                Arrays.stream(this.role.getPermissions().split(",".trim()))
+//                        .map(SimpleGrantedAuthority::new)
+//                        .collect(Collectors.toList());
+                AuthorityUtils.commaSeparatedStringToAuthorityList(this.role.getPermissions());
     }
 
     @Override

@@ -9,10 +9,7 @@ import com.sandro.dtomapper.UserDTOMapper;
 import com.sandro.enumeration.EventType;
 import com.sandro.event.NewUserEvent;
 import com.sandro.exception.ApiException;
-import com.sandro.form.LoginForm;
-import com.sandro.form.UpdateForm;
-import com.sandro.form.UpdatePasswordForm;
-import com.sandro.form.UpdateSettingsForm;
+import com.sandro.form.*;
 import com.sandro.provider.TokenProvider;
 import com.sandro.repository.RoleRepository;
 import com.sandro.service.EventService;
@@ -41,6 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
@@ -50,7 +48,6 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
  * @version 1.0
  * @since 05.06.2023
  */
-
 
 @RestController
 @RequestMapping(path = "/user")
@@ -109,7 +106,7 @@ public class UserResource {
      *
      */
     @PatchMapping("/update")
-    public ResponseEntity<HttpResponse> update(@RequestBody @Valid UpdateForm user) throws InterruptedException {
+    public ResponseEntity<HttpResponse> update(@RequestBody @Valid UpdateForm user) {
         UserDTO updatedUser = userService.updateUserDetails(user);
         publisher.publishEvent(new NewUserEvent(updatedUser.getEmail(), EventType.PROFILE_UPDATE));
         return ResponseEntity
@@ -137,9 +134,9 @@ public class UserResource {
 
     private UserDTO authenticate(String email, String password) {
         try {
-            if (userService.getUserByEmail(email) != null) {
+//            if (userService.getUserByEmail(email) != null) {
 //                publisher.publishEvent(new NewUserEvent(email, EventType.LOGIN_ATTEMPT));
-            }
+//            }
             Authentication authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(email, password));
             UserDTO loggedInUser = UserUtils.getLoggedInUser(authentication);
             if (!loggedInUser.isUsingMfa()) {
@@ -155,7 +152,6 @@ public class UserResource {
             throw new ApiException(exception.getMessage());
         }
     }
-
 
     private ResponseEntity<HttpResponse> sendVerificationCode(UserDTO userDTO) {
         userService.sendVerificationCode(userDTO);
@@ -246,7 +242,7 @@ public class UserResource {
     }
 
     @PatchMapping("/update/settings")
-    public ResponseEntity<HttpResponse> updateSettings(Authentication authentication, @RequestBody @Valid UpdateSettingsForm form) throws InterruptedException {
+    public ResponseEntity<HttpResponse> updateSettings(Authentication authentication, @RequestBody @Valid UpdateSettingsForm form) {
         UserDTO userDTO = UserUtils.getAuthenticatedUser(authentication);
         userService.updateSettings(userDTO.getId(), form.isEnabled(), form.isNotLocked());
         publisher.publishEvent(new NewUserEvent(userDTO.getEmail(), EventType.ACCOUNT_SETTINGS_UPDATE));
@@ -266,7 +262,7 @@ public class UserResource {
     }
 
     @PatchMapping("/update/usingMfa")
-    public ResponseEntity<HttpResponse> updateUsingMfa(Authentication authentication) throws InterruptedException {
+    public ResponseEntity<HttpResponse> updateUsingMfa(Authentication authentication) {
         UserDTO userDTO = UserUtils.getAuthenticatedUser(authentication);
         userService.updateUsingMfa(userDTO.getId());
         publisher.publishEvent(new NewUserEvent(userDTO.getEmail(), EventType.MFA_UPDATE));
@@ -286,9 +282,9 @@ public class UserResource {
     }
 
     @PatchMapping("/update/image")
-    public ResponseEntity<HttpResponse> updateImage(
-            Authentication authentication,
-            @RequestParam("image") MultipartFile image) {
+    public ResponseEntity<HttpResponse> updateImage(Authentication authentication,
+                                                    @RequestParam("image") MultipartFile image
+    ) {
         UserDTO userDTO = UserUtils.getAuthenticatedUser(authentication);
         userService.updateImage(userDTO.getEmail(), image);
         publisher.publishEvent(new NewUserEvent(userDTO.getEmail(), EventType.PROFILE_PICTURE_UPDATE));
@@ -314,26 +310,23 @@ public class UserResource {
 
 
     // START - - - Set new password without Login
-    @GetMapping("/resetpassword/{email}")
-    public ResponseEntity<HttpResponse> resetPassword(@PathVariable String email) {
+    @GetMapping("/reset-password/{email}")
+    public ResponseEntity<HttpResponse> getLinkResetPassword(@PathVariable String email) {
         userService.resetPassword(email);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
-                        .message("Email sent. Check your mail box to reset the password")
+                        .message("Email with verification link was sent. Please check your mail box.")
                         .httpStatus(HttpStatus.OK)
                         .statusCode(HttpStatus.resolve(200).value())
                         .build()
         );
     }
 
-    @PostMapping("/resetpassword/{key}/{password}/{confirmPassword}")
-    public ResponseEntity<HttpResponse> setNewPassword(
-            @PathVariable("key") String key,
-            @PathVariable("password") String password,
-            @PathVariable("confirmPassword") String confirmPassword) {
-
-        userService.setNewPassword(key, password, confirmPassword);
+    @PutMapping("/new/password")
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody @Valid ResetPasswordForm form) {
+//        TimeUnit.SECONDS.sleep(2);
+        userService.updatePasswordBeingLoggedOut(form.getUserId(), form.getNewPassword(), form.getConfirmNewPassword());
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
@@ -367,6 +360,7 @@ public class UserResource {
 
     @GetMapping("/verify/password/{key}")
     public ResponseEntity<HttpResponse> verifyResetPasswordUrl(@PathVariable String key) {
+//        TimeUnit.SECONDS.sleep(2);
         UserDTO user = userService.verifyResetPasswordUrl(key);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()

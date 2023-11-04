@@ -19,8 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
+import static com.sandro.utils.Constants.PUBLIC_URLS;
+import static com.sandro.utils.Constants.SWAGGER_UI;
 
 /**
  * @author Alessandro Formica
@@ -32,41 +33,33 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
-    private static final String[] PUBLIC_URLS = {
-            "/user/register/**",
-            "/user/login/**",
-            "/user/verify/code/**",
-            "/user/verify/password/**",
-            "/user/resetpassword/**",
-            "/user/verify/account/**",
-            "/user/refresh/token/**",
-            "/user/image/**"
-    };
+public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAuthorizationFilter customAuthorizationFilter;
-//    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::getClass)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers(PUBLIC_URLS).permitAll();
-                    request.requestMatchers(HttpMethod.DELETE, "/user/delete/**").hasAnyAuthority("DELETE:USER");
-                    request.requestMatchers(HttpMethod.DELETE, "/customer/delete/**").hasAnyAuthority("DELETE:CUSTOMER");
-                    request.anyRequest().authenticated();
+                    request
+                            .requestMatchers(PUBLIC_URLS).permitAll()
+                            .requestMatchers(SWAGGER_UI).permitAll()
+                            .requestMatchers(HttpMethod.DELETE, "/users/delete/**").hasAnyAuthority("DELETE:USER")
+                            .requestMatchers(HttpMethod.DELETE, "/customers/delete/**").hasAnyAuthority("DELETE:CUSTOMER")
+                            .requestMatchers(new String[]{"/customers/search**", "/customers/search"}).hasAnyAuthority("READ:OPENAPI")
+                            .anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
-                    exception.accessDeniedHandler(customAccessDeniedHandler);
-                    exception.authenticationEntryPoint(customAuthenticationEntryPoint);
+                    exception
+                            .accessDeniedHandler(customAccessDeniedHandler)
+                            .authenticationEntryPoint(customAuthenticationEntryPoint);
                 })
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

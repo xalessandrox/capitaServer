@@ -1,33 +1,22 @@
-jwt:
-  secret: questoragazzodellaviaglucksidivertivaagiocareconme
-spring:
-  autoconfigure:
-#    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-  datasource:
-    url: jdbc:mysql://localhost:3306/securecapita
-    password: root
-    username: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLInnoDBDialect
-    generate-ddl: true
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        globally_quoted_identifiers: true
-        dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
-    open-in-view: false
-  sql:
-    init:
-      mode: never
-      continue-on-error: false
-  web:
-    locale-resolver: fixed
-    locale: it_IT
-server:
-  error:
-    path: /user/error
-    whitelabel:
-      enabled: false
+# Database
+DB_USERNAME: sandro
+DB_PASSWORD: go
+DB_HOST: 192.168.0.19
+DB_PORT: 3306
+DB_NAME: securecapita
+
+# Server
+CONTAINER_PORT: 8080
+ACTIVE_PROFILE: dev
+
+# Email
+EMAIL_HOST: smtp-mail.outlook.com
+EMAIL_PORT: 587
+EMAIL_USERNAME: formicale@hotmail.com
+EMAIL_PASSWORD: umSs_77_wiFa_77_!
+VERIFY_EMAIL_HOST: http://localhost:${CONTAINER_PORT}
+
+UI_APP_URL: http://localhost:4200
+
+JWT_SECRET: questoragazzodellaviaglucksidivertivaagiocareconme
+

@@ -20,7 +20,7 @@ public class SecurecapitaApplication {
         SpringApplication.run(SecurecapitaApplication.class, args);
     }
 
-    private final List<String> ALLOWED_ORIGINS = Arrays.asList("http://localhost:4200", "http://localhost:3000", "192.168.0.193");
+    private final List<String> ALLOWED_ORIGINS = Arrays.asList("http://localhost:4200", "http://localhost:3000", "http://192.168.0.19", "http://localhost:80");
     private final List<String> ALLOWED_HEADERS = Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type", "Accept",
             "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Content-Length");
     private final List<String> EXPOSED_HEADERS = Arrays.asList("Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization",

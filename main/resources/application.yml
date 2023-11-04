@@ -1,7 +1,59 @@
+jwt:
+  secret: ${JWT_SECRET}
 spring:
   profiles:
-#    active: @spring.profiles.active@
-    active: dev
-application:
-  title: 'Application Name: securecapita'
-  version: 1.0
+    mail:
+      host: ${EMAIL_HOST}
+      port: ${EMAIL_PORT}
+      username: ${EMAIL_USERNAME}
+      password: ${EMAIL_PASSWORD}
+      test-connection: true
+      protocol: smtp
+      properties:
+        mail:
+          smtp:
+  #          writetimeout: 5000
+  #          connectiontimeout: 5000
+            timeout: 5000
+            auth: true
+            starttls:
+              enable: true
+              required: true
+      verify:
+        host: ${VERIFY_EMAIL_HOST}
+    autoconfigure:
+      exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+    active: ${ACTIVE_PROFILE:dev}
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLInnoDBDialect
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    open-in-view: false
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+  web:
+    locale-resolver: fixed
+    locale: it_IT
+server:
+  error:
+    path: /user/error
+    whitelabel:
+      enabled: false
+  port: ${CONTAINER_PORT}
+ui:
+  app:
+    url: ${UI_APP_URL}

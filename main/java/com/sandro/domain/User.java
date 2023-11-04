@@ -25,20 +25,10 @@ import java.time.LocalDateTime;
 public class User {
 
     private Long id;
-
-    @NotEmpty(message = "First name cannot be empty")
     private String firstName;
-
-    @NotEmpty(message = "Last name cannot be empty")
     private String lastName;
-
-    @NotEmpty(message = "Email cannot be empty")
-    @Email(message = "Please enter a valid email")
     private String email;
-
-    @NotEmpty(message = "Password cannot be empty")
     private String password;
-
     private String address;
     private String phone;
     private String title;

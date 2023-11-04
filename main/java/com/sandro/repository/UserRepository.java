@@ -37,7 +37,8 @@ public interface UserRepository<T extends User> {
 
     T verifyResetPasswordUrl(String key);
 
-    void setNewPassword(String key, String password, String confirmPassword);
+    void updatePasswordBeingLoggedOut(Long userId, String password, String confirmPassword);
+    void updatePassword(String key, String newPassword, String confirmPassword);
 
     T verifyAccount(String key);
 

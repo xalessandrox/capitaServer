@@ -30,6 +30,7 @@ public interface UserService {
     UserDTO getUserById(Long userId);
 
     void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword);
+    void updatePasswordBeingLoggedOut(Long userId, String newPassword, String confirmNewPassword);
 
     void updateSettings(Long id, boolean enabled, boolean notLocked);
 

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sandro.utils.Constants.*;
+
 /**
  * @author Alessandro Formica
  * @version 1.0
@@ -34,10 +36,6 @@ import java.util.Optional;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private static final String[] PUBLIC_URLS = {"/user/register", "/user/login", "/user/verify/code", "/user/refresh/token", "user/image"};
-    private static final String HTTP_OPTIONS_METHOD = "OPTIONS";
-    private static final String TOKEN_PREFIX = "Bearer ";
-
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -45,6 +43,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
+//            System.out.println("TOKEN:\n" + token);
             Long userId = getUserId(request);
             if (tokenProvider.isTokenValid(userId, token)) {
                 List<GrantedAuthority> authorities = tokenProvider.getAuthorities(token);
@@ -77,7 +76,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 request.getHeader(HttpHeaders.AUTHORIZATION) == null
                         || !request.getHeader(HttpHeaders.AUTHORIZATION).startsWith(TOKEN_PREFIX)
                         || request.getMethod().equalsIgnoreCase(HTTP_OPTIONS_METHOD)
-                        || Arrays.asList(PUBLIC_URLS).contains(request.getRequestURI());
+                        || Arrays.asList(PUBLIC_URLS_CUST_AUTH_FILTER).contains(request.getRequestURI());
     }
 
 }

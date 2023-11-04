@@ -23,7 +23,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@Entity(name = "customers")
+@Entity
+@Table(name = "customers")
 public class Customer {
 
     @Id

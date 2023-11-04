@@ -10,6 +10,7 @@ import com.sandro.form.UpdateForm;
 import com.sandro.repository.RoleRepository;
 import com.sandro.repository.UserRepository;
 import com.sandro.rowmapper.UserRowMapper;
+import com.sandro.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -76,7 +77,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             // save url in verification table
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, Map.of("userId", user.getId(), "url", verificationUrl));
             // send email to user with verification url
-//            emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
+            emailService.sendVerificationEmail(user.getFirstName(), user.getEmail(), verificationUrl.replace("8080", "4200"), ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
             // return the newly created user
@@ -213,6 +214,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         }
     }
 
+    private final EmailService emailService;
     @Override
     public void resetPassword(String email) {
 
@@ -231,8 +233,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
                             "expirationDate", expirationDate
                     )
             );
-            //TODO: SEND AN EMAIL
-            log.info("VERIFICATION URL: --> {}", verificationUrl);
+            verificationUrl = verificationUrl.replace("8080", "4200");
+            emailService.sendVerificationEmail(user.getFirstName(), email, verificationUrl, PASSWORD);
         } catch (EmptyResultDataAccessException exception) {
             log.error(exception.getMessage());
             throw new ApiException("No verification code found");
@@ -274,9 +276,27 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         }
     }
 
+    @Override
+    public void updatePasswordBeingLoggedOut(Long userId, String newPassword, String confirmNewPassword) {
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new ApiException("Passwords don't match. Please try again.");
+        }
+        try {
+            jdbc.update(UPDATE_USER_PWD_BY_USER_ID_QUERY, Map.of(
+                    "userId", userId,
+                    "password", passwordEncoder.encode(newPassword))
+            );
+
+            jdbc.update(DELETE_PASSWORD_VERIFICATION_URL_BY_USER_ID_QUERY, Map.of("userId", userId));
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
 
     @Override
-    public void setNewPassword(String key, String password, String confirmPassword) {
+    public void updatePassword(String key, String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
             throw new ApiException("Passwords don't match. Please try again.");
         }

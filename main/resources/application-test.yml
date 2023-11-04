@@ -7,7 +7,7 @@ DB_NAME: securecapita
 
 # Server
 CONTAINER_PORT: 8085
-ACTIVE_PROFILE: prod
+ACTIVE_PROFILE: test
 
 # Email
 EMAIL_HOST: smtp-mail.outlook.com
