@@ -26,7 +26,7 @@ public class EmailUtils {
 
     Session session = Session.getInstance(getEmailProps(), new Authenticator() {
                 final String username = "formicale@hotmail.com";
-                final String password = "umSs_77_wiFa_77_!";
+                final String password = "";
 
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
